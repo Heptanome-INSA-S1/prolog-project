@@ -1,0 +1,2 @@
+:- dynamic board/1.
+
