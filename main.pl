@@ -1,1 +1,2 @@
-board().
+:- dynamic board/1.
+
