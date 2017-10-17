@@ -68,7 +68,7 @@ true.
 ```
 
 ### matrix_all(I_Matrix, Predicate).
-Is true when all the elements of matrix validate the element
+Is true when all the elements of matrix validate the predicate.
 
 Example :
 ```prolog
