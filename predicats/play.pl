@@ -1,9 +1,4 @@
-:- ensure_loaded(gameover).
-:- ensure_loaded(displayBoard).
-:- ensure_loaded(ia1).
-:- ensure_loaded(playMove).
-:- ensure_loaded(replace).
-:- ensure_loaded(changePlayer).
+:- ensure_loaded([gameover, displayBoard, ia1, playMove, replace, changePlayer]).
 
 %%%% Recursive predicate for playing the game. 
 
