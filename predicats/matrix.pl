@@ -70,7 +70,7 @@ matrix_column([CurrentRow|OtherRows], I_ColumnNum, [HeadColumn|TailColumn]) :-
 % 	input: I_X - The position in x of the Element
 %   input: I_Y - The position in y of the Element
 %   output: Element - The element at the position [I_X][I_Y]
-matrix_element(I_Matrix, I_X, I_Y, Element) :- matrix_row(I_Matrix, I_X, Row), indexOf(Row, Element, I_Y), !.
+matrix_element(I_Matrix, [I_X, I_Y], Element) :- matrix_row(I_Matrix, I_X, Row), indexOf(Row, Element, I_Y), !.
 
 % matrix_diag(I_Matrix, I_start_x, I_start_y, 'LT-RB' | 'RT-LB', length, O_diagonal).
 
@@ -86,3 +86,25 @@ matrix_all(I_Matrix, I_Predicate) :-
 	matrix2list(I_Matrix, List),
 	length(List, Length),
 	each_count(List, I_Predicate, Length).
+
+matrix_right_same(I_Matrix, [I_X, I_Y], [I_X, O_Y]) :-
+	matrix_element(I_Matrix, [I_X, I_Y], Element0),
+	matrix_row(I_Matrix, I_X, Row),
+	indexOf(Row, Element1, O_Y),
+	nonvar(Element1), 
+	Element0 == Element1,
+	O_Y > I_Y,
+	msublist(Row, [I_Y, O_Y], Sublist),
+	list_all(Sublist, nonvar), !.
+
+list_all(List, Predicate) :-
+	length(List, Length),
+	each_count(List, Predicate, Length).
+
+msublist(List, [Start, End], Sublist):-
+  length(Prefix, Start),
+  append(Prefix, Rest, List),
+  Start =< End,
+  Length is End - Start,
+  length(Sublist, Length),
+  append(Sublist, _, Rest).

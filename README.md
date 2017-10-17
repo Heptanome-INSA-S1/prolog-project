@@ -37,7 +37,7 @@ Take a matrix and a columnNum as input parameters and return the matching column
 Row = [1, 4, 7].
 ```
 
-### matrix_element(I_Matrix, I_X, I_Y, O_Element).
+### matrix_element(I_Matrix, [I_X, I_Y], O_Element).
 Get the element at the position I_Matrix[I_X\][I_Y].
 ```prolog
 ?- matrix_element([[1,2,3], [4,5,6], [7,8,9]], 0, 2, Element).
@@ -77,4 +77,16 @@ false.
 
 ?- matrix_all([[2,4,6], [8,10,12], [14,16,18]], even).
 true.
+```
+
+### matrix_right_same(I_Matrix, [I_X, I_Y], O_Coordinate).
+Return the coordonate of the next elements thats equals the element at Matrix[X\][Y] where all the elements between Matrix[X\][Y] and the element at coordinate are pawns.
+
+Example:
+```prolog
+?- matrix_right_same([[_,_,_,_,_,_], [_,_,_,_,_,_], [_,_,'B','W','B',_], [_,_,'W','B',_,_], [_,_,_,_,_,_], [_,_,_,_,_,_]], [2,2], Coordonate).
+Coordonate = [2, 4].
+
+?- matrix_right_same([[_,_,_,_,_,_], [_,_,_,_,_,_], [_,_,'B','W','W',_], [_,_,'W','B',_,_], [_,_,_,_,_,_], [_,_,_,_,_,_]], [2,2], Coordonate).
+false.
 ```
