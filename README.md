@@ -9,7 +9,7 @@ Implementation:
 - [x] matrix_row
 - [x] matrix_column
 - [x] matrix_element
-- [ ] matrix_diag
+- [x] matrix_diag
 - [x] matrix_count
 - [x] matrix_any
 - [x] matrix_all  
@@ -44,10 +44,24 @@ Get the element at the position I_Matrix[I_X\][I_Y].
 Element = 3.
 ```
 
-### matrix_diag(I_Matrix, I_start_x, I_start_y, 'LT-RB' | 'RT-LB', length, O_diagonal).
-Get the matrix that starts from the position [I_start_x\][I_start_y] of length = length into O_diagonal.
-LT-RB => start from left-top to right-bottom
-RT-LB => start from right-top to left-bottom
+### matrix_diag(I_Matrix, [X,Y], Direction, O_diagonal).
+Get the diagonale that starts from the point [X,Y] with the direction Direction.
+The directions can be : `'LeftTop'`, `'LeftBottom'`, `'RightTop'` and `'RightBottom'`.
+
+```prolog
+?- matrix_diag([[1,2,3],[4,5,6],[7,8,9]], [2,0], 'RightTop', Diag).
+Diag = [7, 5, 3].
+
+?- matrix_diag([[1,2,3],[4,5,6],[7,8,9]], [2,2], 'LeftTop', Diag).
+Diag = [9, 5, 1].
+
+?- matrix_diag([[1,2,3],[4,5,6],[7,8,9]], [0,0], 'RightBottom', Diag).
+Diag = [1, 5, 9].
+
+?- matrix_diag([[1,2,3],[4,5,6],[7,8,9]], [0,2], 'LeftBottom', Diag).
+Diag = [3, 5, 7].
+
+```
 
 ### matrix_count(I_Matrix, Predicate, Count).
 Get the number of times where predicate of x is true on the matrix
