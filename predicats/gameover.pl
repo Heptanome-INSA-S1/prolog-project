@@ -1,7 +1,4 @@
-:- ensure_loaded(../main).
-
-
-winner(Board,P) :- board(Board),countPawn(Board,P,Res),countPawn(Board,Player2,Res2),Res>Res2,canNotPlay(Player2).
+winner(Board,P) :- board(Board),countPawn(Board,P,Res),countPawn(Board,Player2,Res2),Res>Res2,canNotPlay(Board, Player2).
 								   
 
 gameover(Winner) :- board(Board), winner(Board,Winner),!.

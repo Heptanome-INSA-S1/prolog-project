@@ -86,3 +86,12 @@ matrix_all(I_Matrix, I_Predicate) :-
 	matrix2list(I_Matrix, List),
 	length(List, Length),
 	each_count(List, I_Predicate, Length).
+
+% Looking all player's possibilities
+
+%possibilitie_right(_, Index, Index) :- 
+%possibilitie_right(I_Row, I_Index, O_Possibilitie) :-
+
+
+% Return the liste of possible actions of the I_Player.
+%matrix_get_possibilities(I_Matrix, I_Player, O_ListPossibilities) :-
