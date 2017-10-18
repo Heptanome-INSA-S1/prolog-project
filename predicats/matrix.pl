@@ -97,6 +97,36 @@ matrix_right_same(I_Matrix, [I_X, I_Y], [I_X, O_Y]) :-
 	msublist(Row, [I_Y, O_Y], Sublist),
 	list_all(Sublist, nonvar), !.
 
+matrix_left_same(I_Matrix, [I_X, I_Y], [I_X, O_Y]) :-
+	matrix_element(I_Matrix, [I_X, I_Y], Element0),
+	matrix_row(I_Matrix, I_X, Row),
+	indexOf(Row, Element1, O_Y),
+	nonvar(Element1), 
+	Element0 == Element1,
+	O_Y < I_Y,
+	msublist(Row, [O_Y, I_Y], Sublist),
+	list_all(Sublist, nonvar), !.
+
+matrix_top_same(I_Matrix, [I_X, I_Y], [O_X, I_Y]) :-
+	matrix_element(I_Matrix, [I_X, I_Y], Element0),
+	matrix_column(I_Matrix, I_Y, Column),
+	indexOf(Column, Element1, O_X),
+	nonvar(Element1), 
+	Element0 == Element1,
+	O_X < I_X,
+	msublist(Column, [O_X, I_X], Sublist),
+	list_all(Sublist, nonvar), !.
+
+matrix_bottom_same(I_Matrix, [I_X, I_Y], [O_X, I_Y]) :-
+	matrix_element(I_Matrix, [I_X, I_Y], Element0),
+	matrix_column(I_Matrix, I_Y, Column),
+	indexOf(Column, Element1, O_X),
+	nonvar(Element1), 
+	Element0 == Element1,
+	O_X > I_X,
+	msublist(Column, [I_X, O_X], Sublist),
+	list_all(Sublist, nonvar), !.
+
 list_all(List, Predicate) :-
 	length(List, Length),
 	each_count(List, Predicate, Length).

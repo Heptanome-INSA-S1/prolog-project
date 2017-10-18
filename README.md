@@ -90,3 +90,15 @@ Coordonate = [2, 4].
 ?- matrix_right_same([[_,_,_,_,_,_], [_,_,_,_,_,_], [_,_,'B','W','W',_], [_,_,'W','B',_,_], [_,_,_,_,_,_], [_,_,_,_,_,_]], [2,2], Coordonate).
 false.
 ```
+
+### matrix_left_same(I_Matrix, [I_X, I_Y], O_Coordinate).
+Return the coordonate of the previous elements thats equals the element at Matrix[X\][Y] where all the elements between Matrix[X\][Y] and the element at coordinate are pawns.
+
+Example:
+```prolog
+?- matrix_left_same([[_,_,_,_,_,_], [_,_,_,_,_,_], [_,_,'B','W','B',_], [_,_,'W','B',_,_], [_,_,_,_,_,_], [_,_,_,_,_,_]], [2,4], Coordonate).
+Coordonate = [2, 2].
+
+?- matrix_left_same([[_,_,_,_,_,_], [_,_,_,_,_,_], [_,_,'B','W','B',_], [_,_,'W','B',_,_], [_,_,_,_,_,_], [_,_,_,_,_,_]], [2,2], Coordonate).
+false.
+```
