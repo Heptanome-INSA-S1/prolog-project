@@ -41,7 +41,7 @@ Row = [1, 4, 7].
 Get the element at the position I_Matrix[I_X\][I_Y].
 ```prolog
 ?- matrix_element([[1,2,3], [4,5,6], [7,8,9]], 0, 2, Element).
-Element = 3
+Element = 3.
 ```
 
 ### matrix_diag(I_Matrix, I_start_x, I_start_y, 'LT-RB' | 'RT-LB', length, O_diagonal).
@@ -80,7 +80,7 @@ true.
 ```
 
 ### matrix_right_same(I_Matrix, [I_X, I_Y], O_Coordinate).
-Return the coordonate of the next elements thats equals the element at Matrix[X\][Y] where all the elements between Matrix[X\][Y] and the element at coordinate are pawns.
+Return the coordonate of the next elements thats equals the element at Matrix[X\][Y] where all the elements between Matrix[X\][Y] and the element at coordinate are pawns.  The coordinate must be on the same row on the left of [X\][Y].
 
 Example:
 ```prolog
@@ -92,7 +92,7 @@ false.
 ```
 
 ### matrix_left_same(I_Matrix, [I_X, I_Y], O_Coordinate).
-Return the coordonate of the previous elements thats equals the element at Matrix[X\][Y] where all the elements between Matrix[X\][Y] and the element at coordinate are pawns.
+Return the coordonate of the previous elements thats equals the element at Matrix[X\][Y] where all the elements between Matrix[X\][Y] and the element at coordinate are pawns. The coordinate must be on the same row on the right of [X\][Y].
 
 Example:
 ```prolog
@@ -101,4 +101,22 @@ Coordonate = [2, 2].
 
 ?- matrix_left_same([[_,_,_,_,_,_], [_,_,_,_,_,_], [_,_,'B','W','B',_], [_,_,'W','B',_,_], [_,_,_,_,_,_], [_,_,_,_,_,_]], [2,2], Coordonate).
 false.
+```
+
+### matrix_top_same(I_Matrix, [I_X, I_Y], O_Coordinate).
+Return the coordonate of the previous elements thats equals the element at Matrix[X\][Y] where all the elements between Matrix[X\][Y] and the element at coordinate are pawns. The coordinate must be on the same column on the top of [X\][Y].
+
+Example:
+```prolog
+?- matrix_top_same([[_,_,_,_,_,_], [_,_,'W',_,_,_], [_,_,'B','W','B',_], [_,_,'W','B',_,_], [_,_,_,_,_,_], [_,_,_,_,_,_]], [3,2], Coordonate).
+Coordonate = [1, 2].
+```
+
+### matrix_bottom_same(I_Matrix, [I_X, I_Y], O_Coordinate).
+Return the coordonate of the previous elements thats equals the element at Matrix[X\][Y] where all the elements between Matrix[X\][Y] and the element at coordinate are pawns. The coordinate must be on the same column on the bottom of [X\][Y].
+
+Example:
+```prolog
+?- matrix_bottom_same([[_,_,_,_,_,_], [_,_,'W',_,_,_], [_,_,'B','W','B',_], [_,_,'W','B',_,_], [_,_,_,_,_,_], [_,_,_,_,_,_]], [1,2], Coordonate).
+Coordonate = [3, 2].
 ```
