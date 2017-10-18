@@ -9,7 +9,7 @@ Implementation:
 - [x] matrix_row
 - [x] matrix_column
 - [x] matrix_element
-- [ ] matrix_diag
+- [x] matrix_diag
 - [x] matrix_count
 - [x] matrix_any
 - [x] matrix_all  
@@ -37,17 +37,31 @@ Take a matrix and a columnNum as input parameters and return the matching column
 Row = [1, 4, 7].
 ```
 
-### matrix_element(I_Matrix, I_X, I_Y, O_Element).
+### matrix_element(I_Matrix, [I_X, I_Y], O_Element).
 Get the element at the position I_Matrix[I_X\][I_Y].
 ```prolog
 ?- matrix_element([[1,2,3], [4,5,6], [7,8,9]], 0, 2, Element).
-Element = 3
+Element = 3.
 ```
 
-### matrix_diag(I_Matrix, I_start_x, I_start_y, 'LT-RB' | 'RT-LB', length, O_diagonal).
-Get the matrix that starts from the position [I_start_x\][I_start_y] of length = length into O_diagonal.
-LT-RB => start from left-top to right-bottom
-RT-LB => start from right-top to left-bottom
+### matrix_diag(I_Matrix, [X,Y], Direction, O_diagonal).
+Get the diagonale that starts from the point [X,Y] with the direction Direction.
+The directions can be : `'LeftTop'`, `'LeftBottom'`, `'RightTop'` and `'RightBottom'`.
+
+```prolog
+?- matrix_diag([[1,2,3],[4,5,6],[7,8,9]], [2,0], 'RightTop', Diag).
+Diag = [7, 5, 3].
+
+?- matrix_diag([[1,2,3],[4,5,6],[7,8,9]], [2,2], 'LeftTop', Diag).
+Diag = [9, 5, 1].
+
+?- matrix_diag([[1,2,3],[4,5,6],[7,8,9]], [0,0], 'RightBottom', Diag).
+Diag = [1, 5, 9].
+
+?- matrix_diag([[1,2,3],[4,5,6],[7,8,9]], [0,2], 'LeftBottom', Diag).
+Diag = [3, 5, 7].
+
+```
 
 ### matrix_count(I_Matrix, Predicate, Count).
 Get the number of times where predicate of x is true on the matrix
@@ -77,4 +91,46 @@ false.
 
 ?- matrix_all([[2,4,6], [8,10,12], [14,16,18]], even).
 true.
+```
+
+### matrix_right_same(I_Matrix, [I_X, I_Y], O_Coordinate).
+Return the coordonate of the next elements thats equals the element at Matrix[X\][Y] where all the elements between Matrix[X\][Y] and the element at coordinate are pawns.  The coordinate must be on the same row on the left of [X\][Y].
+
+Example:
+```prolog
+?- matrix_right_same([[_,_,_,_,_,_], [_,_,_,_,_,_], [_,_,'B','W','B',_], [_,_,'W','B',_,_], [_,_,_,_,_,_], [_,_,_,_,_,_]], [2,2], Coordonate).
+Coordonate = [2, 4].
+
+?- matrix_right_same([[_,_,_,_,_,_], [_,_,_,_,_,_], [_,_,'B','W','W',_], [_,_,'W','B',_,_], [_,_,_,_,_,_], [_,_,_,_,_,_]], [2,2], Coordonate).
+false.
+```
+
+### matrix_left_same(I_Matrix, [I_X, I_Y], O_Coordinate).
+Return the coordonate of the previous elements thats equals the element at Matrix[X\][Y] where all the elements between Matrix[X\][Y] and the element at coordinate are pawns. The coordinate must be on the same row on the right of [X\][Y].
+
+Example:
+```prolog
+?- matrix_left_same([[_,_,_,_,_,_], [_,_,_,_,_,_], [_,_,'B','W','B',_], [_,_,'W','B',_,_], [_,_,_,_,_,_], [_,_,_,_,_,_]], [2,4], Coordonate).
+Coordonate = [2, 2].
+
+?- matrix_left_same([[_,_,_,_,_,_], [_,_,_,_,_,_], [_,_,'B','W','B',_], [_,_,'W','B',_,_], [_,_,_,_,_,_], [_,_,_,_,_,_]], [2,2], Coordonate).
+false.
+```
+
+### matrix_top_same(I_Matrix, [I_X, I_Y], O_Coordinate).
+Return the coordonate of the previous elements thats equals the element at Matrix[X\][Y] where all the elements between Matrix[X\][Y] and the element at coordinate are pawns. The coordinate must be on the same column on the top of [X\][Y].
+
+Example:
+```prolog
+?- matrix_top_same([[_,_,_,_,_,_], [_,_,'W',_,_,_], [_,_,'B','W','B',_], [_,_,'W','B',_,_], [_,_,_,_,_,_], [_,_,_,_,_,_]], [3,2], Coordonate).
+Coordonate = [1, 2].
+```
+
+### matrix_bottom_same(I_Matrix, [I_X, I_Y], O_Coordinate).
+Return the coordonate of the previous elements thats equals the element at Matrix[X\][Y] where all the elements between Matrix[X\][Y] and the element at coordinate are pawns. The coordinate must be on the same column on the bottom of [X\][Y].
+
+Example:
+```prolog
+?- matrix_bottom_same([[_,_,_,_,_,_], [_,_,'W',_,_,_], [_,_,'B','W','B',_], [_,_,'W','B',_,_], [_,_,_,_,_,_], [_,_,_,_,_,_]], [1,2], Coordonate).
+Coordonate = [3, 2].
 ```

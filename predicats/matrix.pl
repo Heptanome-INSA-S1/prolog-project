@@ -24,9 +24,9 @@ matrix2list([H|T], List) :-
 indexOf([Element|_], Element, 0). % We found the element
 indexOf([_|Tail], Element, Index):-
   indexOf(Tail, Element, Index1), % Check in the tail of the list
-  Index is Index1+1.
+  Index is Index1 + 1.
 
-each([H|_], Function) :- 
+each([H], Function) :- 
 	call(Function, H).
 
 each([X|T], Function) :- 
@@ -52,7 +52,7 @@ createMatrix(I_X, I_Y, Matrix) :- mult(I_X, I_Y, Dim), length(List, Dim), list2m
 %	output: O_Row - The row at the position I_RowNum (as List).
 matrix_row([H|_],0,H) :- !.
 matrix_row([_|T], I_RowNum, O_Row) :- 
-    I1 is I_RowNum-1,
+    I1 is I_RowNum - 1,
     matrix_row(T,I1,O_Row).
 
 % Return the I_ColumnNum row of the matrix I_Matrix into O_Column
@@ -70,9 +70,92 @@ matrix_column([CurrentRow|OtherRows], I_ColumnNum, [HeadColumn|TailColumn]) :-
 % 	input: I_X - The position in x of the Element
 %   input: I_Y - The position in y of the Element
 %   output: Element - The element at the position [I_X][I_Y]
-matrix_element(I_Matrix, I_X, I_Y, Element) :- matrix_row(I_Matrix, I_X, Row), indexOf(Row, Element, I_Y), !.
+matrix_element(I_Matrix, [I_X, I_Y], Element) :- matrix_row(I_Matrix, I_X, Row), indexOf(Row, Element, I_Y), !.
 
-% matrix_diag(I_Matrix, I_start_x, I_start_y, 'LT-RB' | 'RT-LB', length, O_diagonal).
+%********************** MATRIX DIAG 'LeftBottom' ************************************************
+
+matrix_diag(I_Matrix, [X,Y], 'LeftBottom', []) :-
+    matrix_dims(I_Matrix, [A|_]),
+	X >= A,
+	Y < 0, !.
+
+matrix_diag(I_Matrix, [X,0], 'LeftBottom', [Element]) :-
+	matrix_element(I_Matrix, [X,0], Element), !.
+
+matrix_diag(I_Matrix, [X,Y], 'LeftBottom', [Element]) :-
+    matrix_dims(I_Matrix, [A|_]),
+    X is A - 1,
+	matrix_element(I_Matrix, [X,Y], Element), !.
+
+matrix_diag(I_Matrix, [X,Y], 'LeftBottom', [H|T]) :-
+    matrix_element(I_Matrix, [X,Y], H),
+    A is X + 1,
+    B is Y - 1,
+    matrix_diag(I_Matrix, [A,B], 'LeftBottom', T), !.
+
+%********************** MATRIX DIAG 'RightBottom' ************************************************
+
+matrix_diag(I_Matrix, [X,Y], 'RightBottom', []) :-
+	matrix_dims(I_Matrix, [A,B]),
+	X >= A,
+	Y >= B, !.
+
+matrix_diag(I_Matrix, [X,Y], 'RightBottom', [Element]) :-
+	matrix_dims(I_Matrix, [A,_]),
+	X is A - 1,
+	matrix_element(I_Matrix, [X,Y], Element), !.
+
+matrix_diag(I_Matrix, [X,Y], 'RightBottom', [Element]) :-
+	matrix_dims(I_Matrix, [_,B]),
+	Y is B - 1,
+	matrix_element(I_Matrix, [X,Y], Element), !.
+
+matrix_diag(I_Matrix, [X,Y], 'RightBottom', [H|T]) :-
+	matrix_element(I_Matrix, [X,Y], H),
+	A is X + 1,
+	B is Y + 1,
+	matrix_diag(I_Matrix, [A,B], 'RightBottom', T).
+
+%********************** MATRIX DIAG 'RightTop' ************************************************
+
+matrix_diag(I_Matrix, [X,Y], 'RightTop', []) :-
+	matrix_dims(I_Matrix, [_,B]),
+	X < 0 ,
+	Y >= B, !.
+
+matrix_diag(I_Matrix, [0,Y], 'RightTop', [Element]) :-
+	matrix_element(I_Matrix, [0,Y], Element), !.
+
+matrix_diag(I_Matrix, [X,Y], 'RightTop', [Element]) :-
+	matrix_dims(I_Matrix, [_,B]),
+	Y is B - 1,
+	matrix_element(I_Matrix, [X,Y], Element), !.
+
+matrix_diag(I_Matrix, [X,Y], 'RightTop', [H|T]) :-
+	matrix_element(I_Matrix, [X,Y], H),
+	A is X - 1,
+	B is Y + 1,
+	matrix_diag(I_Matrix, [A,B], 'RightTop', T).
+
+%********************** MATRIX DIAG 'LeftTop' ************************************************
+
+matrix_diag(_, [X,Y], 'LeftTop', []) :-
+	X < 0,
+	Y < 0, !.
+
+matrix_diag(I_Matrix, [0,Y], 'LeftTop', [Element]) :-
+	matrix_element(I_Matrix, [0,Y], Element), !.
+
+matrix_diag(I_Matrix, [X,0], 'LeftTop', [Element]) :-
+	matrix_element(I_Matrix, [X,0], Element), !.
+
+matrix_diag(I_Matrix, [X,Y], 'LeftTop', [H|T]) :-
+	matrix_element(I_Matrix, [X,Y], H),
+	A is X - 1,
+	B is Y - 1,
+	matrix_diag(I_Matrix, [A,B], 'LeftTop', T).
+
+%********************** MATRIX COUNT *********************************************************
 
 matrix_count(I_Matrix, I_Predicate, O_Count) :-
 	matrix2list(I_Matrix, List),
@@ -95,3 +178,62 @@ matrix_all(I_Matrix, I_Predicate) :-
 
 % Return the liste of possible actions of the I_Player.
 %matrix_get_possibilities(I_Matrix, I_Player, O_ListPossibilities) :-
+
+
+matrix_right_same(I_Matrix, [I_X, I_Y], [I_X, O_Y]) :-
+	matrix_element(I_Matrix, [I_X, I_Y], Element0),
+	matrix_row(I_Matrix, I_X, Row),
+	indexOf(Row, Element1, O_Y),
+	nonvar(Element1), 
+	Element0 == Element1,
+	O_Y > I_Y,
+	msublist(Row, [I_Y, O_Y], Sublist),
+	list_all(Sublist, nonvar), !.
+
+matrix_left_same(I_Matrix, [I_X, I_Y], [I_X, O_Y]) :-
+	matrix_element(I_Matrix, [I_X, I_Y], Element0),
+	matrix_row(I_Matrix, I_X, Row),
+	indexOf(Row, Element1, O_Y),
+	nonvar(Element1), 
+	Element0 == Element1,
+	O_Y < I_Y,
+	msublist(Row, [O_Y, I_Y], Sublist),
+	list_all(Sublist, nonvar), !.
+
+matrix_top_same(I_Matrix, [I_X, I_Y], [O_X, I_Y]) :-
+	matrix_element(I_Matrix, [I_X, I_Y], Element0),
+	matrix_column(I_Matrix, I_Y, Column),
+	indexOf(Column, Element1, O_X),
+	nonvar(Element1), 
+	Element0 == Element1,
+	O_X < I_X,
+	msublist(Column, [O_X, I_X], Sublist),
+	list_all(Sublist, nonvar), !.
+
+matrix_bottom_same(I_Matrix, [I_X, I_Y], [O_X, I_Y]) :-
+	matrix_element(I_Matrix, [I_X, I_Y], Element0),
+	matrix_column(I_Matrix, I_Y, Column),
+	indexOf(Column, Element1, O_X),
+	nonvar(Element1), 
+	Element0 == Element1,
+	O_X > I_X,
+	msublist(Column, [I_X, O_X], Sublist),
+	list_all(Sublist, nonvar), !.
+
+matrix_dims(I_Matrix, [X,Y]) :-
+	matrix_row(I_Matrix, 0, Row),
+	matrix_column(I_Matrix, 0, Column),
+	length(Row, Y),
+	length(Column, X).
+
+list_all(List, Predicate) :-
+	length(List, Length),
+	each_count(List, Predicate, Length).
+
+msublist(List, [Start, End], Sublist):-
+  length(Prefix, Start),
+  append(Prefix, Rest, List),
+  Start =< End,
+  Length is End - Start,
+  length(Sublist, Length),
+  append(Sublist, _, Rest).

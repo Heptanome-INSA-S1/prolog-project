@@ -1,0 +1,1 @@
+isBoardFull(Board) :- matrix_count(Board, var, Count), Count ==0.
