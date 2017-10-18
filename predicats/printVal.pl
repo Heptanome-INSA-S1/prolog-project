@@ -3,4 +3,4 @@
 %
 :- ensure_loaded([matrix]).
 printVal(I_Matrix,I_X,I_Y) :- matrix_element(I_Matrix, [I_X, I_Y],O_Element), write(O_Element).
-printVal(I_Matrix,I_X,I_Y) :- matrix_element(I_Matrix, [I_X, I_Y], O_Element), var(O_Element), write('_'),!.
+printVal(I_Matrix,I_X,I_Y) :- matrix_element(I_Matrix, [I_X, I_Y], O_Element), var(O_Element), write('?'),!.
