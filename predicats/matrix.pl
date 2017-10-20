@@ -1,13 +1,7 @@
+:- ensure_loaded([list]).
 % Matrix librairie
 
-even(Number) :- Number mod 2 =:= 0.
-
-append([], List, List).
-append([Head|Tail], List, [Head|TailConcat]):-append(Tail, List, TailConcat).
-
 mult(A,B, A_times_B) :- A_times_B is A * B.
-
-length_(Length, List) :- length(List, Length).
 
 list2matrix(List, RowSize, Matrix) :-
     length(List, L),
@@ -20,27 +14,6 @@ matrix2list([], []).
 matrix2list([H|T], List) :-
 	matrix2list(T, RestList),
 	append(H, RestList, List).
-
-indexOf([Element|_], Element, 0). % We found the element
-indexOf([_|Tail], Element, Index):-
-  indexOf(Tail, Element, Index1), % Check in the tail of the list
-  Index is Index1 + 1.
-
-each([H], Function) :- 
-	call(Function, H).
-
-each([X|T], Function) :- 
-	call(Function, X),
-	each(T, Function), !.
-
-each_count([], _, 0).
-each_count([H|T], Predicate, Count) :-  
-	call(Predicate, H),
-	each_count(T, Predicate, CountMinus1),
-	Count is CountMinus1 + 1, !.
-each_count([_|T], Predicate, Count) :- 
-	each_count(T, Predicate, Count).
-
 
 % Create a matrix of dims [X,Y] into O_Matrix
 createMatrix(I_X, I_Y, Matrix) :- mult(I_X, I_Y, Dim), length(List, Dim), list2matrix(List, I_Y, Matrix ).
@@ -210,20 +183,62 @@ matrix_bottom_same(I_Matrix, [I_X, I_Y], [O_X, I_Y]) :-
 	msublist(Column, [I_X, O_X], Sublist),
 	list_all(Sublist, nonvar), !.
 
+matrix_left_bottom_same(I_Matrix, [I_X, I_Y], [O_X, O_Y]) :-
+	matrix_element(I_Matrix, [I_X, I_Y], Element0),
+	matrix_diag(I_Matrix, [I_X, I_Y], 'LeftBottom', Diag),
+	indexOf(Diag, Element1, Offset),
+	nonvar(Element1),
+	Element0 == Element1,
+	Offset > 0,
+	msublist(Diag, [0, Offset], Sublist),
+	list_all(Sublist, nonvar),
+	O_X is Offset + I_X,
+    O_Y is I_Y - Offset, !.
+
+matrix_right_bottom_same(I_Matrix, [I_X, I_Y], [O_X, O_Y]) :-
+	matrix_element(I_Matrix, [I_X, I_Y], Element0),
+	matrix_diag(I_Matrix, [I_X, I_Y], 'RightBottom', Diag),
+	indexOf(Diag, Element1, Offset),
+	nonvar(Element1),
+	Element0 == Element1,
+	Offset > 0,
+	msublist(Diag, [0, Offset], Sublist),
+	list_all(Sublist, nonvar),
+	O_X is Offset + I_X,
+	O_Y is Offset + I_Y, !.
+
+matrix_left_top_same(I_Matrix, [I_X, I_Y], [O_X, O_Y]) :-
+	matrix_element(I_Matrix, [I_X, I_Y], Element0),
+	matrix_diag(I_Matrix, [I_X, I_Y], 'LeftTop', Diag),
+	indexOf(Diag, Element1, Offset),
+	nonvar(Element1),
+	Element0 == Element1,
+	Offset > 0,
+	msublist(Diag, [0, Offset], Sublist),
+	list_all(Sublist, nonvar),
+	O_X is I_X - Offset,
+	O_Y is I_Y - Offset, !.
+
+matrix_right_top_same(I_Matrix, [I_X, I_Y], [O_X, O_Y]) :-
+	matrix_element(I_Matrix, [I_X, I_Y], Element0),
+	matrix_diag(I_Matrix, [I_X, I_Y], 'LeftTop', Diag),
+	indexOf(Diag, Element1, Offset),
+	nonvar(Element1),
+	Element0 == Element1,
+	Offset > 0,
+	msublist(Diag, [0, Offset], Sublist),
+	list_all(Sublist, nonvar),
+	O_X is I_X - Offset,
+	O_Y is I_Y + Offset, !.
+
+
+%--------------------------------- matrix_dims --------------------------------------------------
+% matrix_dims(I_Matrix, [X,Y]).
+% matrix_dims([[1,2,3], [4,5,6]], Dims).
+% Dims = [2,3].
+
 matrix_dims(I_Matrix, [X,Y]) :-
 	matrix_row(I_Matrix, 0, Row),
 	matrix_column(I_Matrix, 0, Column),
 	length(Row, Y),
 	length(Column, X).
-
-list_all(List, Predicate) :-
-	length(List, Length),
-	each_count(List, Predicate, Length).
-
-msublist(List, [Start, End], Sublist):-
-  length(Prefix, Start),
-  append(Prefix, Rest, List),
-  Start =< End,
-  Length is End - Start,
-  length(Sublist, Length),
-  append(Sublist, _, Rest).
