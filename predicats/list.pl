@@ -15,6 +15,11 @@ each([X|T], Function) :-
 	call(Function, X),
 	each(T, Function), !.
 
+each_no_last([_], _).
+each_no_last([X|T], Function) :-
+	call(Function, X),
+	each_no_last(T, Function), !.
+
 each_count([], _, 0).
 each_count([H|T], Predicate, Count) :-
 	call(Predicate, H),
@@ -40,3 +45,10 @@ indexOf([Element|_], Element, 0). % We found the element
 indexOf([_|Tail], Element, Index):-
 indexOf(Tail, Element, Index1), % Check in the tail of the list
 Index is Index1 + 1.
+
+list_display(List) :-
+    each_no_last(List, printValWithSpace),
+    length(List, Length),
+    LastIndex is Length - 1,
+    indexOf(List, Element, LastIndex),
+    printVal(Element), !.

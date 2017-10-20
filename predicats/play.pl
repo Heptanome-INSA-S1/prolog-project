@@ -10,7 +10,9 @@ play(Player):-
 	board(Board), % instanciate the board from the knowledge base 
 	displayBoard, % print it
 	ia(Board, Player, Move), % ask the AI for a move, that is, an index for the Player
-	playMove(Board, Player, Move, NewBoard), % Play the move and get the result in a new Board
+	playMove(Board, Player, Move, PlayedBoard), % Play the move and get the result in a new Board
+	% findIndexTransformation(PlayedBoard, Move, Indices),
+    reversePawns(PlayedBoard, Indices, NewBoard),
 	replaceBoard(Board, NewBoard), % Remove the old board from the KB and store the new one
 	changePlayer(Player,NextPlayer), % Change the player before next turn
 	play(NextPlayer). % next turn!

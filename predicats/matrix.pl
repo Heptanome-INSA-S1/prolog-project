@@ -14,8 +14,6 @@ matrix2list([H|T], List) :-
 	matrix2list(T, RestList),
 	append(H, RestList, List).
 
-matrix_get_possibilities(_, _, []).
-
 % Create a matrix of dims [X,Y] into O_Matrix
 createMatrix(I_X, I_Y, Matrix) :- mult(I_X, I_Y, Dim), length(List, Dim), list2matrix(List, I_Y, Matrix ).
 
@@ -387,3 +385,24 @@ matrix_dims(I_Matrix, [X,Y]) :-
 	matrix_column(I_Matrix, 0, Column),
 	length(Row, Y),
 	length(Column, X).
+
+matrix_display([Row], X) :-
+    write(X), write(' |'),
+    list_display(Row),
+    write('|'),
+    nl.
+
+matrix_display([Row|Tail], X) :-
+    write(X), write(' |'),
+    list_display(Row),
+    write('|'),
+    nl,
+    NewX is X + 1,
+    matrix_display(Tail, NewX).
+
+matrix_each_coordinates(Matrix, Coordinates) :-
+    matrix_dims(Matrix, [Row, Cols]),
+    LastX is Row - 1,
+    LastY is Cols - 1,
+    findall([X,Y], (between(0, LastX, X), between(0, LastY, Y)), Coordinates).
+

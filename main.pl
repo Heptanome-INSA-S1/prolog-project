@@ -1,5 +1,6 @@
 % We import all files needed
 :- ensure_loaded([
+    predicats/for,
     predicats/list,
     predicats/matrix,
     predicats/canNotPlay,
@@ -14,7 +15,9 @@
     predicats/play,
     predicats/playMove,
     predicats/printVal,
-    predicats/replaceBoard
+    predicats/replaceBoard,
+    predicats/returnPawns,
+    predicats/if
     ]).
 
 % We declare a dynamic variable wich will represent the board of the game
@@ -27,6 +30,5 @@ init :-
     playMove(MA, 'B', [3,3], MB),
     playMove(MB, 'W', [2,3], MC),
     playMove(MC, 'W', [3,2], Board),
-    playMove(MC, 'B', [4,1], Board),
     assert(board(Board)),
     play('B').
