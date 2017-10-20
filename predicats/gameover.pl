@@ -1,8 +1,8 @@
-:- ensure_loaded(../main).
+:- ensure_loaded([countPawn, canNotPlay, isBoardFull]).
 
-
-winner(Board,P) :- board(Board),countPawn(Board,P,Res),countPawn(Board,Player2,Res2),Res>Res2,canNotPlay(Player2).
-								   
+winner(Board,'B') :- board(Board),countPawn(Board, WhiteCount, BlackCount),WhiteCount>BlackCount,canNotPlay(Board, 'W'),canNotPlay(Board, 'B').
+winner(Board,'W') :- board(Board),countPawn(Board, WhiteCount, BlackCount),WhiteCount<BlackCount,canNotPlay(Board, 'B'),canNotPlay(Board, 'W').
 
 gameover(Winner) :- board(Board), winner(Board,Winner),!.
-gameover('Draw') :- board(Board),countPawn(Board,Player1,Res1),countPawn(Board,Player2,Res2), Res1==Res2. %à poursuivre
+gameover('Draw') :- board(Board),isBoardFull(Board),countPawn(Board, WhiteCount, BlackCount),WhiteCount==BlackCount.
+gameover('Draw') :- board(Board),canNotPlay(Player2),canNotPlay(Player1),countPawn(Board, WhiteCount, BlackCount),WhiteCount==BlackCount.
