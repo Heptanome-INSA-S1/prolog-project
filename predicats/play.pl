@@ -1,6 +1,4 @@
-:- ensure_loaded([gameover, displayBoard, ia1, playMove, replaceBoard, changePlayer]).
-
-%%%% Recursive predicate for playing the game. 
+%%%% Recursive predicate for playing the game.
 
 % The game is over, we use a cut to stop the proof search, and display the winner/board. 
 play(_):- 
@@ -11,8 +9,8 @@ play(Player):-
 	write('New turn for:'), writeln(Player),
 	board(Board), % instanciate the board from the knowledge base 
 	displayBoard, % print it
-	ia1(Board, Player, Move), % ask the AI for a move, that is, an index for the Player 
-	playMove(Board, Move, Player, NewBoard), % Play the move and get the result in a new Board
+	ia(Board, Player, Move), % ask the AI for a move, that is, an index for the Player
+	playMove(Board, Player, Move, NewBoard), % Play the move and get the result in a new Board
 	replaceBoard(Board, NewBoard), % Remove the old board from the KB and store the new one
 	changePlayer(Player,NextPlayer), % Change the player before next turn
 	play(NextPlayer). % next turn!

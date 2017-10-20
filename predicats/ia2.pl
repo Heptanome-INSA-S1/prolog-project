@@ -1,7 +1,5 @@
 %IA 2 : joue le coup qui donne le plus de pion à chaque tour.
 
-:- ensure_loaded([matrix,getNumberPawnReturned]).
-
 nextMove(Board,Player,ListMove,MaxCount,Count,BestMove,Move) :-
     Count>MaxCount,
     getBestMove(Board,Player,ListMove,Count,Move).

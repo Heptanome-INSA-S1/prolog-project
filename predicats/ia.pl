@@ -1,7 +1,5 @@
 %IA 1 : joue aléatoirement.
 
-:- ensure_loaded(matrix).
-
 choose([], []).
 choose(List, Elt) :-
 	length(List, Length),

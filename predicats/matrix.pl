@@ -1,4 +1,3 @@
-:- ensure_loaded([list]).
 % Matrix librairie
 
 mult(A,B, A_times_B) :- A_times_B is A * B.
@@ -14,6 +13,8 @@ matrix2list([], []).
 matrix2list([H|T], List) :-
 	matrix2list(T, RestList),
 	append(H, RestList, List).
+
+matrix_get_possibilities(_, _, []).
 
 % Create a matrix of dims [X,Y] into O_Matrix
 createMatrix(I_X, I_Y, Matrix) :- mult(I_X, I_Y, Dim), length(List, Dim), list2matrix(List, I_Y, Matrix ).
