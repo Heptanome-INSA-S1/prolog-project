@@ -1,3 +1,5 @@
+%IA 1 : joue aléatoirement.
+
 :- ensure_loaded(matrix).
 
 choose([], []).
