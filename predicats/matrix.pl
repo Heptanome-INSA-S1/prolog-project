@@ -220,6 +220,89 @@ possibilitie_bottom(I_Row, I_Player, I_NumColumn, I_Start_Index, I_Index, O_Poss
 	I_Player \== NextElement,
 	possibilitie_bottom(I_Row, I_Player, I_NumColumn, I_Start_Index,NextIndex,O_Possibilitie).
 
+possibilitie_diag_right_top(I_Row, _,  I_NumRow, I_ColOffset, I_Start_Column, I_NumColumn, H) :-
+	NextColumn is I_NumColumn + 1,
+	NextRow is I_NumRow - 1,
+	length(I_Row,C),
+	NextColumn < C,
+	nth0(NextColumn, I_Row, NextElement),
+	var(NextElement),
+	I_NumColumn \== I_Start_Column,
+	Column is NextColumn + I_ColOffset,
+	H = [NextRow, Column],
+	!.
+
+possibilitie_diag_right_top(I_Row, I_Player, I_NumRow, I_ColOffset, I_Start_Column, I_NumColumn, O_Possibilitie) :-
+	NextRow is I_NumRow - 1,
+	NextColumn is I_NumColumn + 1,
+	length(I_Row,C),
+	NextColumn < C,
+	nth0(NextColumn, I_Row, NextElement),
+	nonvar(NextElement),
+	I_Player \== NextElement,
+	possibilitie_diag_right_top(I_Row, I_Player, NextRow, I_ColOffset, I_Start_Column,NextColumn,O_Possibilitie).
+
+possibilitie_diag_right_bottom(I_Row, _,  I_NumRow, I_ColOffset, I_Start_Column, I_NumColumn, H) :-
+	NextColumn is I_NumColumn + 1,
+	NextRow is I_NumRow + 1,
+	length(I_Row,C),
+	NextColumn < C,
+	nth0(NextColumn, I_Row, NextElement),
+	var(NextElement),
+	I_NumColumn \== I_Start_Column,
+	Column is NextColumn + I_ColOffset,
+	H = [NextRow, Column],
+	!.
+
+possibilitie_diag_right_bottom(I_Row, I_Player, I_NumRow, I_ColOffset, I_Start_Column, I_NumColumn, O_Possibilitie) :-
+	NextRow is I_NumRow + 1,
+	NextColumn is I_NumColumn + 1,
+	length(I_Row,C),
+	NextColumn < C,
+	nth0(NextColumn, I_Row, NextElement),
+	nonvar(NextElement),
+	I_Player \== NextElement,
+	possibilitie_diag_right_bottom(I_Row, I_Player, NextRow, I_ColOffset, I_Start_Column,NextColumn,O_Possibilitie).
+
+possibilitie_diag_left_top(I_Row, _,  I_NumRow, I_ColOffset, I_Start_Column, I_NumColumn, H) :-
+	NextColumn is I_NumColumn - 1,
+	NextRow is I_NumRow - 1,
+	NextColumn >= 0,
+	nth0(NextColumn, I_Row, NextElement),
+	var(NextElement),
+	I_NumColumn \== I_Start_Column,
+	Column is NextColumn + I_ColOffset,
+	H = [NextRow, Column],
+	!.
+
+possibilitie_diag_left_top(I_Row, I_Player, I_NumRow, I_ColOffset, I_Start_Column, I_NumColumn, O_Possibilitie) :-
+	NextRow is I_NumRow - 1,
+	NextColumn is I_NumColumn - 1,
+	NextColumn >= 0,
+	nth0(NextColumn, I_Row, NextElement),
+	nonvar(NextElement),
+	I_Player \== NextElement,
+	possibilitie_diag_left_top(I_Row, I_Player, NextRow, I_ColOffset, I_Start_Column,NextColumn,O_Possibilitie).
+
+possibilitie_diag_left_bottom(I_Row, _,  I_NumRow, I_ColOffset, I_Start_Column, I_NumColumn, H) :-
+	NextColumn is I_NumColumn - 1,
+	NextRow is I_NumRow + 1,
+	NextColumn >= 0,
+	nth0(NextColumn, I_Row, NextElement),
+	var(NextElement),
+	I_NumColumn \== I_Start_Column,
+	Column is NextColumn + I_ColOffset,
+	H = [NextRow, Column],
+	!.
+
+possibilitie_diag_left_bottom(I_Row, I_Player, I_NumRow, I_ColOffset, I_Start_Column, I_NumColumn, O_Possibilitie) :-
+	NextRow is I_NumRow + 1,
+	NextColumn is I_NumColumn - 1,
+	NextColumn >= 0,
+	nth0(NextColumn, I_Row, NextElement),
+	nonvar(NextElement),
+	I_Player \== NextElement,
+	possibilitie_diag_left_bottom(I_Row, I_Player, NextRow, I_ColOffset, I_Start_Column,NextColumn,O_Possibilitie).
 
 % Return the list of possible right actions of the I_Player.
 
@@ -271,18 +354,93 @@ matrix_get_bottom_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 		), PossibilitiesPerColumn)
 	), O_Possibilities).
 
+matrix_get_diag_right_top_possibilities(I_Matrix, I_Player, O_Possibilities) :-
+	matrix_dims(I_Matrix, [C, R]),
+	MaxCol is C-1,
+	MaxRow is R-1,
+	findall(PossibilitiesPerColumn,(
+		between(0,MaxRow,IndexRow),
+		between(0,MaxCol,IndexColumn),
+		((IndexColumn == 0, IndexRow \== MaxRow);(IndexRow == MaxRow)),
+		matrix_diag(I_Matrix, [IndexRow,IndexColumn], 'RightTop', CurrentDiag),
+		list_elements(CurrentDiag, I_Player, ListPlayer),
+		findall(Possibilitie,(
+			member(IndColumn, ListPlayer),
+			IndRow is IndexRow - IndColumn,
+			possibilitie_diag_right_top(CurrentDiag, I_Player, IndRow, IndexColumn, IndColumn, IndColumn, Possibilitie)
+		), PossibilitiesPerColumn)
+	), O_Possibilities).
 
+matrix_get_diag_right_bottom_possibilities(I_Matrix, I_Player, O_Possibilities) :-
+	matrix_dims(I_Matrix, [C, R]),
+	MaxCol is C-1,
+	MaxRow is R-1,
+	findall(PossibilitiesPerColumn,(
+		between(0,MaxRow,IndexRow),
+		between(0,MaxCol,IndexColumn),
+		((IndexRow == 0, IndexColumn \== 0);(IndexColumn == 0)),
+		matrix_diag(I_Matrix, [IndexRow,IndexColumn], 'RightBottom', CurrentDiag),
+		list_elements(CurrentDiag, I_Player, ListPlayer),
+		findall(Possibilitie,(
+			member(IndColumn, ListPlayer),
+			IndRow is IndexRow + IndColumn, 
+			possibilitie_diag_right_bottom(CurrentDiag, I_Player, IndRow,IndexColumn, IndColumn, IndColumn, Possibilitie)
+		), PossibilitiesPerColumn)
+	), O_Possibilities).
+
+matrix_get_diag_left_top_possibilities(I_Matrix, I_Player, O_Possibilities) :-
+	matrix_dims(I_Matrix, [C, R]),
+	MaxCol is C-1,
+	MaxRow is R-1,
+	findall(PossibilitiesPerColumn,(
+		between(0,MaxRow,IndexRow),
+		between(0,MaxCol,IndexColumn),
+		((IndexRow == 0, IndexColumn \== 0);(IndexColumn == 0)),
+		matrix_diag(I_Matrix, [IndexRow,IndexColumn], 'RightBottom', CurrentDiag),
+		list_elements(CurrentDiag, I_Player, ListPlayer),
+		findall(Possibilitie,(
+			member(IndColumn, ListPlayer),
+			IndRow is IndexRow + IndColumn,
+			possibilitie_diag_left_top(CurrentDiag, I_Player, IndRow, IndexColumn, IndColumn, IndColumn, Possibilitie)
+		), PossibilitiesPerColumn)
+	), O_Possibilities).
+
+matrix_get_diag_left_bottom_possibilities(I_Matrix, I_Player, O_Possibilities) :-
+	matrix_dims(I_Matrix, [C, R]),
+	MaxCol is C-1,
+	MaxRow is R-1,
+	findall(PossibilitiesPerColumn,(
+		between(0,MaxRow,IndexRow),
+		between(0,MaxCol,IndexColumn),
+		((IndexColumn == 0, IndexRow \== MaxRow);(IndexRow == MaxRow)),
+		matrix_diag(I_Matrix, [IndexRow,IndexColumn], 'RightTop', CurrentDiag),
+		list_elements(CurrentDiag, I_Player, ListPlayer),
+		findall(Possibilitie,(
+			member(IndColumn, ListPlayer),
+			IndRow is IndexRow - IndColumn,
+			possibilitie_diag_left_bottom(CurrentDiag, I_Player, IndRow, IndexColumn, IndColumn, IndColumn, Possibilitie)
+		), PossibilitiesPerColumn)
+	), O_Possibilities).
 
 matrix_get_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 	matrix_get_right_possibilities(I_Matrix, I_Player, PossRight),
 	matrix_get_left_possibilities(I_Matrix, I_Player, PossLeft),
 	matrix_get_top_possibilities(I_Matrix, I_Player, PossTop),
 	matrix_get_bottom_possibilities(I_Matrix, I_Player, PossBottom),
+	matrix_get_diag_left_top_possibilities(I_Matrix,I_Player, PossDiagLeftTop),
+	matrix_get_diag_left_bottom_possibilities(I_Matrix,I_Player, PossDiagLeftBottom),
+	matrix_get_diag_right_top_possibilities(I_Matrix,I_Player, PossDiagRightTop),
+	matrix_get_diag_right_bottom_possibilities(I_Matrix,I_Player, PossDiagRightBottom),
 	append(PossRight, PossLeft, PossRow),
 	append(PossTop, PossBottom, PossColumn),
-	append(PossRow, PossColumn, Possibilities),
+	append(PossDiagLeftTop, PossDiagLeftBottom, PossDiagLeft),
+	append(PossDiagRightTop, PossDiagRightBottom, PossDiagRight),
+	append(PossRow, PossColumn, PossLine),
+	append(PossDiagLeft, PossDiagRight, PossDiag),
+	append(PossLine, PossDiag, Possibilities),
 	delete(Possibilities, [], PossibilitiesLessVoid),
-	matrix2list(PossibilitiesLessVoid, O_Possibilities).
+	matrix2list(PossibilitiesLessVoid, PossibilitiesToList),
+	list_to_set(PossibilitiesToList, O_Possibilities).
 
 
 
