@@ -45,6 +45,8 @@ matrix_column([CurrentRow|OtherRows], I_ColumnNum, [HeadColumn|TailColumn]) :-
 %   output: Element - The element at the position [I_X][I_Y]
 matrix_element(I_Matrix, [I_X, I_Y], Element) :- matrix_row(I_Matrix, I_X, Row), indexOf(Row, Element, I_Y), !.
 
+list_elements(I_Liste, I_Element, O_Liste) :-  findall(I,( nth0(I,I_Liste, Element), nonvar(Element), I_Element == Element), O_Liste).
+
 %********************** MATRIX DIAG 'LeftBottom' ************************************************
 
 matrix_diag(I_Matrix, [X,Y], 'LeftBottom', []) :-
@@ -143,14 +145,41 @@ matrix_all(I_Matrix, I_Predicate) :-
 	length(List, Length),
 	each_count(List, I_Predicate, Length).
 
-% Looking all player's possibilities
+%===================================== Looking all player's possibilities ============================
 
-%possibilitie_right(_, Index, Index) :- 
-%possibilitie_right(I_Row, I_Index, O_Possibilitie) :-
+% Check a row.
+
+possibilitie_right(I_Row, _,  I_NumRow, I_Start_Index, I_Index, H) :-
+	NextIndex is I_Index + 1,
+	length(I_Row,L),
+	NextIndex < L,
+	nth0(NextIndex, I_Row, NextElement),
+	var(NextElement),
+	I_Index \== I_Start_Index,
+	H = [I_NumRow,NextIndex],
+	!.
+
+possibilitie_right(I_Row, I_Player, I_NumRow, I_Start_Index, I_Index, O_Possibilitie) :-
+	NextIndex is I_Index + 1,
+	length(I_Row,L),
+	NextIndex < L,
+	nth0(NextIndex, I_Row, NextElement),
+	nonvar(NextElement),
+	I_Player \== NextElement,
+	possibilitie_right(I_Row, I_Player, I_NumRow, I_Start_Index,NextIndex,O_Possibilitie).
 
 
-% Return the liste of possible actions of the I_Player.
-%matrix_get_possibilities(I_Matrix, I_Player, O_ListPossibilities) :-
+% Return the list of possible right actions of the I_Player.
+matrix_get_right_possibilities([], _,_, []).
+matrix_get_right_possibilities([CurrentRow|OtherRows], I_Player, I_NumRow, O_Possibilities) :-
+	list_elements(CurrentRow, I_Player, ListPlayer),
+	findall(Possibilitie, (member(Index, ListPlayer),possibilitie_right(CurrentRow, I_Player, I_NumRow ,Index , Index, Possibilitie)), CurrentPossibilities),
+	NewNumRow is I_NumRow + 1,
+	append(CurrentPossibilities, NewPossibilities, O_Possibilities),
+	matrix_get_right_possibilities(OtherRows, I_Player, NewNumRow, NewPossibilities).
+
+
+
 
 
 matrix_right_same(I_Matrix, [I_X, I_Y], [I_X, O_Y]) :-
