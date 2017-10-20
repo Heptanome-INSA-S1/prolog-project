@@ -168,6 +168,59 @@ possibilitie_right(I_Row, I_Player, I_NumRow, I_Start_Index, I_Index, O_Possibil
 	I_Player \== NextElement,
 	possibilitie_right(I_Row, I_Player, I_NumRow, I_Start_Index,NextIndex,O_Possibilitie).
 
+possibilitie_left(I_Row, _,  I_NumRow, I_Start_Index, I_Index, H) :-
+	NextIndex is I_Index - 1,
+	NextIndex >= 0,
+	nth0(NextIndex, I_Row, NextElement),
+	var(NextElement),
+	I_Index \== I_Start_Index,
+	H = [I_NumRow,NextIndex],
+	!.
+
+possibilitie_left(I_Row, I_Player, I_NumRow, I_Start_Index, I_Index, O_Possibilitie) :-
+	NextIndex is I_Index - 1,
+	NextIndex >= 0,
+	nth0(NextIndex, I_Row, NextElement),
+	nonvar(NextElement),
+	I_Player \== NextElement,
+	possibilitie_left(I_Row, I_Player, I_NumRow, I_Start_Index,NextIndex,O_Possibilitie).
+
+possibilitie_top(I_Row, _,  I_NumColumn, I_Start_Index, I_Index, H) :-
+	NextIndex is I_Index - 1,
+	NextIndex >= 0,
+	nth0(NextIndex, I_Row, NextElement),
+	var(NextElement),
+	I_Index \== I_Start_Index,
+	H = [NextIndex, I_NumColumn],
+	!.
+
+possibilitie_top(I_Row, I_Player, I_NumColumn, I_Start_Index, I_Index, O_Possibilitie) :-
+	NextIndex is I_Index - 1,
+	NextIndex >= 0,
+	nth0(NextIndex, I_Row, NextElement),
+	nonvar(NextElement),
+	I_Player \== NextElement,
+	possibilitie_top(I_Row, I_Player, I_NumColumn, I_Start_Index,NextIndex,O_Possibilitie).
+
+possibilitie_bottom(I_Row, _,  I_NumColumn, I_Start_Index, I_Index, H) :-
+	NextIndex is I_Index + 1,
+	length(I_Row,L),
+	NextIndex < L,
+	nth0(NextIndex, I_Row, NextElement),
+	var(NextElement),
+	I_Index \== I_Start_Index,
+	H = [NextIndex, I_NumColumn],
+	!.
+
+possibilitie_bottom(I_Row, I_Player, I_NumColumn, I_Start_Index, I_Index, O_Possibilitie) :-
+	NextIndex is I_Index + 1,
+	length(I_Row,L),
+	NextIndex < L,
+	nth0(NextIndex, I_Row, NextElement),
+	nonvar(NextElement),
+	I_Player \== NextElement,
+	possibilitie_bottom(I_Row, I_Player, I_NumColumn, I_Start_Index,NextIndex,O_Possibilitie).
+
 
 % Return the list of possible right actions of the I_Player.
 matrix_get_right_possibilities([], _,_, []).
@@ -178,7 +231,37 @@ matrix_get_right_possibilities([CurrentRow|OtherRows], I_Player, I_NumRow, O_Pos
 	append(CurrentPossibilities, NewPossibilities, O_Possibilities),
 	matrix_get_right_possibilities(OtherRows, I_Player, NewNumRow, NewPossibilities).
 
+matrix_get_left_possibilities([],_,_,[]).
+matrix_get_left_possibilities([CurrentRow|OtherRows], I_Player, I_NumRow, O_Possibilities) :-
+	list_elements(CurrentRow, I_Player, ListPlayer),
+	findall(Possibilitie, (member(Index, ListPlayer),possibilitie_left(CurrentRow, I_Player, I_NumRow ,Index , Index, Possibilitie)), CurrentPossibilities),
+	NewNumRow is I_NumRow + 1,
+	append(CurrentPossibilities, NewPossibilities, O_Possibilities),
+	matrix_get_left_possibilities(OtherRows, I_Player, NewNumRow, NewPossibilities).
 
+matrix_get_top_possibilities(I_Matrix, I_Player, O_Possibilities) :-
+	matrix_dims(I_Matrix, [C, _]),
+	findall(PossibilitiesPerColumn,(
+		between(0,C,IndexColumn),
+		matrix_column(I_Matrix, IndexColumn, CurrentColumn),
+		list_elements(CurrentColumn, I_Player, ListPlayer),
+		findall(Possibilitie,(
+			member(Index, ListPlayer),
+			possibilitie_top(CurrentColumn, I_Player, IndexColumn, Index, Index, Possibilitie)
+		), PossibilitiesPerColumn)
+	), O_Possibilities).
+
+matrix_get_bottom_possibilities(I_Matrix, I_Player, O_Possibilities) :-
+	matrix_dims(I_Matrix, [C, _]),
+	findall(PossibilitiesPerColumn,(
+		between(0,C,IndexColumn),
+		matrix_column(I_Matrix, IndexColumn, CurrentColumn),
+		list_elements(CurrentColumn, I_Player, ListPlayer),
+		findall(Possibilitie,(
+			member(Index, ListPlayer),
+			possibilitie_bottom(CurrentColumn, I_Player, IndexColumn, Index, Index, Possibilitie)
+		), PossibilitiesPerColumn)
+	), O_Possibilities).
 
 
 
