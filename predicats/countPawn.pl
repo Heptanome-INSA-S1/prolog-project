@@ -1,3 +1,5 @@
+:- ensure_loaded(matrix.pl).
+
 isWhite(X) :- nonvar(X),X == 'W'.
 isBlack(X) :- nonvar(X),X == 'B'.
 
