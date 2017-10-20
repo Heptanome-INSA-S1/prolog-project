@@ -6,4 +6,4 @@ nearPawn(Board,index,color) :-
 	Elem2==color,
 	(index2 is index+1; index2 is index-1; index2 is index+7; index2 is index+8; index2 is index+9;index2 is index-7; index2 is index-8; index2 is index-9 ).
 
-ia(Board,Player,Move) :- repeat, Move is random(64), nearPawn(Board,Move,'Noir'), var(Move), !.
+ia(Board,Player1,Move) :- repeat, Move is random(64), nearPawn(Board,Move,'B'), var(Move), !. %pas encore finit
