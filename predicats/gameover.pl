@@ -1,3 +1,5 @@
+:- ensure_loaded([countPawn, canNotPlay, isBoardFull]).
+
 winner(Board,'B') :- board(Board),countPawn(Board, WhiteCount, BlackCount),WhiteCount>BlackCount,canNotPlay(Board, 'W'),canNotPlay(Board, 'B').
 winner(Board,'W') :- board(Board),countPawn(Board, WhiteCount, BlackCount),WhiteCount<BlackCount,canNotPlay(Board, 'B'),canNotPlay(Board, 'W').
 
