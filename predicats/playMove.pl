@@ -1,1 +1,1 @@
-playMove(Board,Player,Move,NewBoard) :- Board=NewBoard,  nth0(Move,NewBoard,Player).
+playMove(Board,Player,Move,NewBoard) :- Board=NewBoard,  matrix_element(NewBoard,Move,Player).
