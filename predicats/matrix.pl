@@ -224,21 +224,30 @@ possibilitie_bottom(I_Row, I_Player, I_NumColumn, I_Start_Index, I_Index, O_Poss
 
 
 % Return the list of possible right actions of the I_Player.
-matrix_get_right_possibilities([], _,_, []).
-matrix_get_right_possibilities([CurrentRow|OtherRows], I_Player, I_NumRow, O_Possibilities) :-
-	list_elements(CurrentRow, I_Player, ListPlayer),
-	findall(Possibilitie, (member(Index, ListPlayer),possibilitie_right(CurrentRow, I_Player, I_NumRow ,Index , Index, Possibilitie)), CurrentPossibilities),
-	NewNumRow is I_NumRow + 1,
-	append(CurrentPossibilities, NewPossibilities, O_Possibilities),
-	matrix_get_right_possibilities(OtherRows, I_Player, NewNumRow, NewPossibilities).
 
-matrix_get_left_possibilities([],_,_,[]).
-matrix_get_left_possibilities([CurrentRow|OtherRows], I_Player, I_NumRow, O_Possibilities) :-
-	list_elements(CurrentRow, I_Player, ListPlayer),
-	findall(Possibilitie, (member(Index, ListPlayer),possibilitie_left(CurrentRow, I_Player, I_NumRow ,Index , Index, Possibilitie)), CurrentPossibilities),
-	NewNumRow is I_NumRow + 1,
-	append(CurrentPossibilities, NewPossibilities, O_Possibilities),
-	matrix_get_left_possibilities(OtherRows, I_Player, NewNumRow, NewPossibilities).
+matrix_get_right_possibilities(I_Matrix, I_Player, O_Possibilities) :-
+	matrix_dims(I_Matrix, [_, R]),
+	findall(PossibilitiesPerRow,(
+		between(0,R,IndexRow),
+		matrix_row(I_Matrix, IndexRow, CurrentRow),
+		list_elements(CurrentRow, I_Player, ListPlayer),
+		findall(Possibilitie,(
+			member(Index, ListPlayer),
+			possibilitie_right(CurrentRow, I_Player, IndexRow, Index, Index, Possibilitie)
+		), PossibilitiesPerRow)
+	), O_Possibilities).
+
+matrix_get_left_possibilities(I_Matrix, I_Player, O_Possibilities) :-
+	matrix_dims(I_Matrix, [_, R]),
+	findall(PossibilitiesPerRow,(
+		between(0,R,IndexRow),
+		matrix_row(I_Matrix, IndexRow, CurrentRow),
+		list_elements(CurrentRow, I_Player, ListPlayer),
+		findall(Possibilitie,(
+			member(Index, ListPlayer),
+			possibilitie_left(CurrentRow, I_Player, IndexRow, Index, Index, Possibilitie)
+		), PossibilitiesPerRow)
+	), O_Possibilities).
 
 matrix_get_top_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 	matrix_dims(I_Matrix, [C, _]),
@@ -263,6 +272,19 @@ matrix_get_bottom_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 			possibilitie_bottom(CurrentColumn, I_Player, IndexColumn, Index, Index, Possibilitie)
 		), PossibilitiesPerColumn)
 	), O_Possibilities).
+
+
+
+matrix_get_possibilities(I_Matrix, I_Player, O_Possibilities) :-
+	matrix_get_right_possibilities(I_Matrix, I_Player, PossRight),
+	matrix_get_left_possibilities(I_Matrix, I_Player, PossLeft),
+	matrix_get_top_possibilities(I_Matrix, I_Player, PossTop),
+	matrix_get_bottom_possibilities(I_Matrix, I_Player, PossBottom),
+	append(PossRight, PossLeft, PossRow),
+	append(PossTop, PossBottom, PossColumn),
+	append(PossRow, PossColumn, Possibilities),
+	delete(Possibilities, [], PossibilitiesLessVoid),
+	matrix2list(PossibilitiesLessVoid, O_Possibilities).
 
 
 
