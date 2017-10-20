@@ -307,9 +307,10 @@ possibilitie_diag_left_bottom(I_Row, I_Player, I_NumRow, I_ColOffset, I_Start_Co
 % Return the list of possible right actions of the I_Player.
 
 matrix_get_right_possibilities(I_Matrix, I_Player, O_Possibilities) :-
-	matrix_dims(I_Matrix, [_, R]),
+	matrix_dims(I_Matrix, [R,_]),
+	MaxRow is R-1,
 	findall(PossibilitiesPerRow,(
-		between(0,R,IndexRow),
+		between(0,MaxRow,IndexRow),
 		matrix_row(I_Matrix, IndexRow, CurrentRow),
 		list_elements(CurrentRow, I_Player, ListPlayer),
 		findall(Possibilitie,(
@@ -319,9 +320,10 @@ matrix_get_right_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 	), O_Possibilities).
 
 matrix_get_left_possibilities(I_Matrix, I_Player, O_Possibilities) :-
-	matrix_dims(I_Matrix, [_, R]),
+	matrix_dims(I_Matrix, [R,_]),
+	MaxRow is R-1,
 	findall(PossibilitiesPerRow,(
-		between(0,R,IndexRow),
+		between(0,MaxRow,IndexRow),
 		matrix_row(I_Matrix, IndexRow, CurrentRow),
 		list_elements(CurrentRow, I_Player, ListPlayer),
 		findall(Possibilitie,(
@@ -331,9 +333,10 @@ matrix_get_left_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 	), O_Possibilities).
 
 matrix_get_top_possibilities(I_Matrix, I_Player, O_Possibilities) :-
-	matrix_dims(I_Matrix, [C, _]),
+	matrix_dims(I_Matrix, [_, C]),
+	MaxCol is C-1,
 	findall(PossibilitiesPerColumn,(
-		between(0,C,IndexColumn),
+		between(0,MaxCol,IndexColumn),
 		matrix_column(I_Matrix, IndexColumn, CurrentColumn),
 		list_elements(CurrentColumn, I_Player, ListPlayer),
 		findall(Possibilitie,(
@@ -343,9 +346,10 @@ matrix_get_top_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 	), O_Possibilities).
 
 matrix_get_bottom_possibilities(I_Matrix, I_Player, O_Possibilities) :-
-	matrix_dims(I_Matrix, [C, _]),
+	matrix_dims(I_Matrix, [_, C]),
+	MaxCol is C-1,
 	findall(PossibilitiesPerColumn,(
-		between(0,C,IndexColumn),
+		between(0,MaxCol,IndexColumn),
 		matrix_column(I_Matrix, IndexColumn, CurrentColumn),
 		list_elements(CurrentColumn, I_Player, ListPlayer),
 		findall(Possibilitie,(
@@ -355,7 +359,7 @@ matrix_get_bottom_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 	), O_Possibilities).
 
 matrix_get_diag_right_top_possibilities(I_Matrix, I_Player, O_Possibilities) :-
-	matrix_dims(I_Matrix, [C, R]),
+	matrix_dims(I_Matrix, [R, C]),
 	MaxCol is C-1,
 	MaxRow is R-1,
 	findall(PossibilitiesPerColumn,(
@@ -372,7 +376,7 @@ matrix_get_diag_right_top_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 	), O_Possibilities).
 
 matrix_get_diag_right_bottom_possibilities(I_Matrix, I_Player, O_Possibilities) :-
-	matrix_dims(I_Matrix, [C, R]),
+	matrix_dims(I_Matrix, [R, C]),
 	MaxCol is C-1,
 	MaxRow is R-1,
 	findall(PossibilitiesPerColumn,(
@@ -389,7 +393,7 @@ matrix_get_diag_right_bottom_possibilities(I_Matrix, I_Player, O_Possibilities) 
 	), O_Possibilities).
 
 matrix_get_diag_left_top_possibilities(I_Matrix, I_Player, O_Possibilities) :-
-	matrix_dims(I_Matrix, [C, R]),
+	matrix_dims(I_Matrix, [R, C]),
 	MaxCol is C-1,
 	MaxRow is R-1,
 	findall(PossibilitiesPerColumn,(
@@ -406,7 +410,7 @@ matrix_get_diag_left_top_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 	), O_Possibilities).
 
 matrix_get_diag_left_bottom_possibilities(I_Matrix, I_Player, O_Possibilities) :-
-	matrix_dims(I_Matrix, [C, R]),
+	matrix_dims(I_Matrix, [R, C]),
 	MaxCol is C-1,
 	MaxRow is R-1,
 	findall(PossibilitiesPerColumn,(
