@@ -28,4 +28,5 @@ init :-
     playMove(MB, 'W', [2,3], MC),
     playMove(MC, 'W', [3,2], Board),
     playMove(MC, 'B', [4,1], Board),
+    assert(board(Board)),
     play('B').
