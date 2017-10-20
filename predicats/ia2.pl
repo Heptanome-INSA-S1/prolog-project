@@ -5,7 +5,7 @@ nextMove(Board,Player,ListMove,MaxCount,Count,BestMove,Move) :-
     getBestMove(Board,Player,ListMove,Count,Move).
 
 nextMove(Board,Player,ListMove,MaxCount,Count,BestMove,Move) :-
-    Count<=MaxCount,
+    Count =< MaxCount,
     getBestMove(Board,Player,ListMove,MaxCount,BestMove).
 
 getBestMove(Board,Player,[],_,_).

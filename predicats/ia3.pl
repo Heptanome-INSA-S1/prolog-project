@@ -10,7 +10,7 @@ nextMove(Board,Player,ListMove,MaxCount,Count,BestMove,Move) :-
     Count>MaxCount,
     getBestMove(Board,Player,ListMove,Count,Move).
 nextMove(Board,Player,ListMove,MaxCount,Count,BestMove,Move) :-
-    Count<=MaxCount,
+    Count =< MaxCount,
     getBestMove(Board,Player,ListMove,MaxCount,BestMove).
 
 %Calcul pour chaque move un score correspondant 
