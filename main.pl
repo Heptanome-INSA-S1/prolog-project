@@ -6,6 +6,7 @@
     predicats/canNotPlay,
     predicats/changePlayer,
     predicats/countPawn,
+    predicats/findIndexTransformation,
     predicats/displayBoard,
     predicats/gameover,
     predicats/getNumberPawnReturned,
@@ -22,6 +23,8 @@
 
 % We declare a dynamic variable wich will represent the board of the game
 :- dynamic board/1.
+
+wait :- get_single_char(_).
 
 % We initialize the start of the game.
 init :-

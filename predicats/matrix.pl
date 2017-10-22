@@ -1,5 +1,7 @@
 % Matrix librairie
 
+:- ensure_loaded([list]).
+
 mult(A,B, A_times_B) :- A_times_B is A * B.
 
 list2matrix(List, RowSize, Matrix) :-
@@ -308,7 +310,7 @@ possibilitie_diag_left_bottom(I_Row, I_Player, I_NumRow, I_ColOffset, I_Start_Co
 
 matrix_get_right_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 	matrix_dims(I_Matrix, [R,_]),
-	MaxRow is R-1,
+	MaxRow is R - 1,
 	findall(PossibilitiesPerRow,(
 		between(0,MaxRow,IndexRow),
 		matrix_row(I_Matrix, IndexRow, CurrentRow),
@@ -321,7 +323,7 @@ matrix_get_right_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 
 matrix_get_left_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 	matrix_dims(I_Matrix, [R,_]),
-	MaxRow is R-1,
+	MaxRow is R - 1,
 	findall(PossibilitiesPerRow,(
 		between(0,MaxRow,IndexRow),
 		matrix_row(I_Matrix, IndexRow, CurrentRow),
@@ -334,7 +336,7 @@ matrix_get_left_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 
 matrix_get_top_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 	matrix_dims(I_Matrix, [_, C]),
-	MaxCol is C-1,
+	MaxCol is C - 1,
 	findall(PossibilitiesPerColumn,(
 		between(0,MaxCol,IndexColumn),
 		matrix_column(I_Matrix, IndexColumn, CurrentColumn),
@@ -347,7 +349,7 @@ matrix_get_top_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 
 matrix_get_bottom_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 	matrix_dims(I_Matrix, [_, C]),
-	MaxCol is C-1,
+	MaxCol is C - 1,
 	findall(PossibilitiesPerColumn,(
 		between(0,MaxCol,IndexColumn),
 		matrix_column(I_Matrix, IndexColumn, CurrentColumn),
@@ -360,8 +362,8 @@ matrix_get_bottom_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 
 matrix_get_diag_right_top_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 	matrix_dims(I_Matrix, [R, C]),
-	MaxCol is C-1,
-	MaxRow is R-1,
+	MaxCol is C - 1,
+	MaxRow is R - 1,
 	findall(PossibilitiesPerColumn,(
 		between(0,MaxRow,IndexRow),
 		between(0,MaxCol,IndexColumn),
@@ -377,8 +379,8 @@ matrix_get_diag_right_top_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 
 matrix_get_diag_right_bottom_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 	matrix_dims(I_Matrix, [R, C]),
-	MaxCol is C-1,
-	MaxRow is R-1,
+	MaxCol is C - 1,
+	MaxRow is R - 1,
 	findall(PossibilitiesPerColumn,(
 		between(0,MaxRow,IndexRow),
 		between(0,MaxCol,IndexColumn),
@@ -394,8 +396,8 @@ matrix_get_diag_right_bottom_possibilities(I_Matrix, I_Player, O_Possibilities) 
 
 matrix_get_diag_left_top_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 	matrix_dims(I_Matrix, [R, C]),
-	MaxCol is C-1,
-	MaxRow is R-1,
+	MaxCol is C - 1,
+	MaxRow is R - 1,
 	findall(PossibilitiesPerColumn,(
 		between(0,MaxRow,IndexRow),
 		between(0,MaxCol,IndexColumn),
@@ -411,8 +413,8 @@ matrix_get_diag_left_top_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 
 matrix_get_diag_left_bottom_possibilities(I_Matrix, I_Player, O_Possibilities) :-
 	matrix_dims(I_Matrix, [R, C]),
-	MaxCol is C-1,
-	MaxRow is R-1,
+	MaxCol is C - 1,
+	MaxRow is R - 1,
 	findall(PossibilitiesPerColumn,(
 		between(0,MaxRow,IndexRow),
 		between(0,MaxCol,IndexColumn),
@@ -459,24 +461,20 @@ matrix_right_same(I_Matrix, [I_X, I_Y], [I_X, O_Y]) :-
 	list_all(Sublist, nonvar), !.
 
 matrix_left_same(I_Matrix, [I_X, I_Y], [I_X, O_Y]) :-
-	matrix_element(I_Matrix, [I_X, I_Y], Element0),
+	matrix_element(I_Matrix, [I_X, I_Y], Element),
 	matrix_row(I_Matrix, I_X, Row),
-	indexOf(Row, Element1, O_Y),
-	nonvar(Element1), 
-	Element0 == Element1,
-	O_Y < I_Y,
-	msublist(Row, [O_Y, I_Y], Sublist),
-	list_all(Sublist, nonvar), !.
+	msublist(Row, [0, I_Y], SubRow),
+	lastIndexOf(SubRow, Element, O_Y),
+	msublist(Row, [O_Y, I_Y], SubRow2),
+	list_all(SubRow2, nonvar), !.
 
 matrix_top_same(I_Matrix, [I_X, I_Y], [O_X, I_Y]) :-
-	matrix_element(I_Matrix, [I_X, I_Y], Element0),
+	matrix_element(I_Matrix, [I_X, I_Y], Element),
 	matrix_column(I_Matrix, I_Y, Column),
-	indexOf(Column, Element1, O_X),
-	nonvar(Element1), 
-	Element0 == Element1,
-	O_X < I_X,
-	msublist(Column, [O_X, I_X], Sublist),
-	list_all(Sublist, nonvar), !.
+	msublist(Column, [0, I_X], SubCol),
+	lastIndexOf(SubCol, Element, O_X),
+	msublist(SubCol, [O_X, I_X], SubCol2),
+	list_all(SubCol2, nonvar), !.
 
 matrix_bottom_same(I_Matrix, [I_X, I_Y], [O_X, I_Y]) :-
 	matrix_element(I_Matrix, [I_X, I_Y], Element0),
@@ -526,7 +524,7 @@ matrix_left_top_same(I_Matrix, [I_X, I_Y], [O_X, O_Y]) :-
 
 matrix_right_top_same(I_Matrix, [I_X, I_Y], [O_X, O_Y]) :-
 	matrix_element(I_Matrix, [I_X, I_Y], Element0),
-	matrix_diag(I_Matrix, [I_X, I_Y], 'LeftTop', Diag),
+	matrix_diag(I_Matrix, [I_X, I_Y], 'RightTop', Diag),
 	indexOf(Diag, Element1, Offset),
 	nonvar(Element1),
 	Element0 == Element1,

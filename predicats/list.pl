@@ -1,7 +1,13 @@
+:- ensure_loaded([printVal]).
+
 %--------------------- list_append ----------------------------
 % append a list to another
 % list_append([a], [b,c], Concat).
 % Concat = [a,b,c].
+
+not_in([], _).
+not_in([X], Y) :- X \== Y.
+not_in([H|T], Y) :- H \== Y, not_in(T, Y).
 
 list_append([], List, List).
 list_append([Head|Tail], List, [Head|TailConcat]) :- list_append(Tail, List, TailConcat).
@@ -44,7 +50,12 @@ msublist(List, [Start, End], Sublist):-
 indexOf([Element|_], Element, 0). % We found the element
 indexOf([_|Tail], Element, Index):-
 indexOf(Tail, Element, Index1), % Check in the tail of the list
-Index is Index1 + 1.
+    Index is Index1 + 1.
+
+lastIndexOfRec([H | T], N, Idx, Acc, Ret) :- Idx2 is Idx + 1, (H == N, !, lastIndexOfRec(T, N, Idx2, Idx, Ret); lastIndexOfRec(T, N, Idx2, Acc, Ret)).
+lastIndexOfRec([], _, _, Acc, Acc).
+
+lastIndexOf(List, Needle, Ret) :- lastIndexOfRec(List, Needle, 0, -1, Ret), Ret > -1.
 
 list_display(List) :-
     each_no_last(List, printValWithSpace),
