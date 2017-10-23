@@ -2,15 +2,18 @@
 
 % The game is over, we use a cut to stop the proof search, and display the winner/board.
 play(_):-
-	gameover(Winner), !, write('Game is Over. Winner: '), writeln(Winner), displayBoard, !.
+	gameover(Winner), !,
+	write('Game is Over. Winner: '), writeln(Winner),
+	displayBoard,
+	 !.
 
 % The player can play
 play(Player):-
   board(Board), % instanciate the board from the knowledge base
-  write('New turn for:'), writeln(Player),
-  displayBoard, % print it
+ % write('New turn for:'), writeln(Player),
+ % displayBoard, % print it
   canPlay(Board, Player),
-  ia(Board, Player, Move), % ask the AI for a move, that is, an index for the Player
+  getMove(Board, Player, Move), % ask the AI for a move, that is, an index for the Player
   playMove(Board, Player, Move, PlayedBoard),
   findIndexTransformation(PlayedBoard, Move, Indices),
   reversePawns(PlayedBoard, Indices, NewBoard),
@@ -21,8 +24,13 @@ play(Player):-
 % The player cannot play
 play(Player):-
   board(Board), % instanciate the board from the knowledge base
-  write('New turn for:'), writeln(Player),
-  displayBoard, % print it
+ % write('New turn for:'), writeln(Player),
+ % displayBoard, % print it
   changePlayer(Player, NextPlayer),
   canPlay(Board, NextPlayer),
   play(NextPlayer).
+
+getMove(Board, 'W', Move) :-
+    ia(Board, 'W', Move).
+getMove(Board, 'B', Move) :-
+    ia(Board, 'B', Move).
