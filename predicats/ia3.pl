@@ -40,7 +40,7 @@ getSecondBestMove(Board,Player,[Move|ListMove],MaxCount,BestMove) :-
     getNumberPawnReturned(Board,Player,Move,Count),
 	nextMove(Board,Player,ListMove,MaxCount,Count,BestMove,Move).
 
-ia2(Board,Player,BestMove) :-
+ia3(Board,Player,BestMove) :-
     MaxCount is 0,
 	matrix_get_possibilities(Board, Player,ListMove),
 	getFirstBestMove(Board,Player,ListMove,MaxCount,BestMove). 
