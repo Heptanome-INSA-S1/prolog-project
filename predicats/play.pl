@@ -10,8 +10,8 @@ play(_):-
 % The player can play
 play(Player):-
   board(Board), % instanciate the board from the knowledge base
- % write('New turn for:'), writeln(Player),
  % displayBoard, % print it
+ % write('New turn for:'), writeln(Player),
   canPlay(Board, Player),
   getMove(Board, Player, Move), % ask the AI for a move, that is, an index for the Player
   playMove(Board, Player, Move, PlayedBoard),
@@ -24,13 +24,14 @@ play(Player):-
 % The player cannot play
 play(Player):-
   board(Board), % instanciate the board from the knowledge base
- % write('New turn for:'), writeln(Player),
  % displayBoard, % print it
+ % write('New turn for:'), writeln(Player),
   changePlayer(Player, NextPlayer),
   canPlay(Board, NextPlayer),
   play(NextPlayer).
 
 getMove(Board, 'W', Move) :-
-    ia(Board, 'W', Move).
+    ia2(Board, 'W', Move).
+
 getMove(Board, 'B', Move) :-
     ia(Board, 'B', Move).

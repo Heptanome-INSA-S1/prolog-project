@@ -11,6 +11,8 @@
     predicats/gameover,
     predicats/getNumberPawnReturned,
     predicats/ia,
+    predicats/ia2,
+    predicats/ia3,
     predicats/isBoardFull,
     predicats/isValidAction,
     predicats/play,

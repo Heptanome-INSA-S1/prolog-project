@@ -2,7 +2,8 @@ get_or_zero(Predicate, Z, Z) :-
     Predicate.
 get_or_zero(_, _, 0).
 
-getNumberPawnReturned(CurentBoard, Player, [X_Move,  Y_Move],Count) :-
+getNumberPawnReturned(InputBoard, Player, [X_Move,  Y_Move],Count) :-
+    copy_term(InputBoard, CurentBoard),
     playMove(CurentBoard, Player, [X_Move, Y_Move],Board),
     get_or_zero(matrix_right_same(Board, [X_Move, Y_Move], [_, YRight]), YRight - Y_Move - 1, Res1),
 %    write('Res1: '), writeln(Res1),
