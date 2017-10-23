@@ -4,14 +4,25 @@
 play(_):-
 	gameover(Winner), !, write('Game is Over. Winner: '), writeln(Winner), displayBoard, !.
 
-% The game is not over, we play the next turn
+% The player can play
 play(Player):-
-    board(Board), % instanciate the board from the knowledge base
-	write('New turn for: '), write(Player),
-	displayBoard,
-	ia(Board, Player, Move),
-	playMove(Board, Player, Move, BoardWithPawn),
-	findIndexTransformation(BoardWithPawn, Move, Indicies),
-	reversePawns(BoardWithPawn, Indicies, NewBoard),
-	replaceBoard(Board, NewBoard),
-	matrix_display(NewBoard, 0),!.
+  board(Board), % instanciate the board from the knowledge base
+  write('New turn for:'), writeln(Player),
+  displayBoard, % print it
+  canPlay(Board, Player),
+  ia(Board, Player, Move), % ask the AI for a move, that is, an index for the Player
+  playMove(Board, Player, Move, PlayedBoard),
+  findIndexTransformation(PlayedBoard, Move, Indices),
+  reversePawns(PlayedBoard, Indices, NewBoard),
+  replaceBoard(Board, NewBoard), % Remove the old board from the KB and store the new one
+  changePlayer(Player,NextPlayer), % Change the player before next turn
+  play(NextPlayer). % next turn!
+
+% The player cannot play
+play(Player):-
+  board(Board), % instanciate the board from the knowledge base
+  write('New turn for:'), writeln(Player),
+  displayBoard, % print it
+  changePlayer(Player, NextPlayer),
+  canPlay(Board, NextPlayer),
+  play(NextPlayer).

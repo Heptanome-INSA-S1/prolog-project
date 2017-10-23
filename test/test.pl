@@ -23,7 +23,8 @@
 :- ensure_loaded([
     list_test,
     matrix_test,
-    findIndexTransformation_test
+    findIndexTransformation_test,
+    reversePawns_test
 ]).
 
 % Debug mod ------------------------
@@ -90,6 +91,7 @@ run_unit_tests :-
     list_tests,
     matrix_tests,
     findIndexTransformation_tests,
+    reversePawns_tests,
 
     writeln('End tests ---------------'),
 

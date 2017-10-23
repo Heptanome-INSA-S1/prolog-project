@@ -1,5 +1,6 @@
-reversePawn('W', 'B').
-reversePawn('B', 'W').
+reversePawn(W, 'B') :- nonvar(W), W == 'W', !.
+reversePawn(B, 'W') :- nonvar(B), B == 'B', !.
+reversePawn(_, _) :- !.
 
 reversePawns(From, Coordinates, To) :-
     matrix_dims(From, [X,Y]),
@@ -14,5 +15,6 @@ reversePawns(From, Coordinates, To) :-
             reversePawn(El, ReverseEl),
             if(member([I,J], Coordinates), ReverseEl, El, Pawn )
         ),
-        To
-    ).
+        ListTo
+    ),
+    list2matrix(ListTo, Y, To).

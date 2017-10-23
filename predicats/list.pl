@@ -63,3 +63,17 @@ list_display(List) :-
     LastIndex is Length - 1,
     indexOf(List, Element, LastIndex),
     printVal(Element), !.
+
+list_novar([H], [H]) :-
+    nonvar(H).
+
+list_novar([H], []) :-
+    var(H).
+
+list_novar([H|T], [H|LT]) :-
+    nonvar(H),
+    list_novar(T, LT).
+
+list_novar([H|T], List) :-
+    var(H),
+    list_novar(T, List).
