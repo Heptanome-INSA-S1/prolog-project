@@ -10,9 +10,11 @@
     predicats/displayBoard,
     predicats/gameover,
     predicats/getNumberPawnReturned,
-    predicats/ia,
-    predicats/ia2,
-    predicats/ia3,
+    predicats/ia_random,
+    predicats/ia_greedy,
+    predicats/ia_min_max,
+    predicats/simulate_move,
+    predicats/ia_depth,
     predicats/isBoardFull,
     predicats/isValidAction,
     predicats/play,
@@ -26,7 +28,10 @@
 % We declare a dynamic variable wich will represent the board of the game
 :- dynamic board/1.
 
-wait :- get_single_char(_).
+debug(false).
+
+wait :- debug(X), X, get_single_char(_), !.
+wait.
 
 % We initialize the start of the game.
 init :-
@@ -37,3 +42,9 @@ init :-
     playMove(MC, 'W', [3,2], Board),
     assert(board(Board)),
     play('B').
+
+getMove(Board, 'W', Move) :-
+    ia_random(Board, 'W', Move), wait.
+
+getMove(Board, 'B', Move) :-
+    ia_min_max(Board, 'B', Move), wait.

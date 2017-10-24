@@ -6,5 +6,5 @@ choose(List, Elt) :-
 	random(0, Length, Index),
 	nth0(Index, List, Elt).
 
-ia(Board,Player,Move) :-
+ia_random(Board,Player,Move) :-
 	matrix_get_possibilities(Board, Player,List),choose(List,Move).

@@ -63,7 +63,7 @@ mustBeFalse(_, _, _) :- !.
 
 expected(_, X, Expected, Given) :-
     X, Given == Expected, !.
-
+%
 expected(Name, X, Expected, Given) :-
     X, Expected \== Given, write('  Test: '), write(Name), write(' failed, expected: '), write(Expected), write(', given: '), write(Given), nl, !.
 

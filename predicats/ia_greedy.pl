@@ -11,6 +11,6 @@ get_max(Board, Player,[I|T], MaxCount, BestMove) :-
     if(MaxHead > MaxTail, I, MoveTail, BestMove).
     
 
-ia2(Board,Player,BestMove) :-
+ia_greedy(Board,Player,BestMove) :-
 	matrix_get_possibilities(Board, Player,ListMove),
 	get_max(Board,Player,ListMove,MaxCount,BestMove).
